@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zone-dashboard
+  labels:
+    app: zone-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zone-dashboard
+  template:
+    metadata:
+      labels:
+        app: zone-dashboard
+    spec:
+      containers:
+      - name: dashboard
+        image: zone-dashboard:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zone-dashboard
+spec:
+  selector:
+    app: zone-dashboard
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: NodePort
